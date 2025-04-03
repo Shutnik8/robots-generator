@@ -21,10 +21,6 @@
       padding: 20px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
       border-radius: 8px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
     }
     h1 {
       font-size: 24px;
@@ -41,16 +37,16 @@
       font-weight: 500;
       color: #555;
       display: block;
-      text-align: center;
-      margin-top: 10px;
+      margin-bottom: 5px;
     }
-    input[type="text"], input[type="number"] {
-      width: 80%;
-      padding: 8px;
+    input[type="text"], input[type="number"], textarea {
+      width: calc(100% - 20px);
+      padding: 10px;
       margin: 4px 0 16px;
       border: 1px solid #CCC;
       border-radius: 4px;
-      text-align: center;
+      box-sizing: border-box;
+      display: block;
     }
     .button {
       display: inline-block;
@@ -72,15 +68,17 @@
       background-color: #2E4561;
     }
     textarea {
-      width: 80%;
+      width: calc(100% - 20px);
       height: 150px;
       margin-top: 16px;
       padding: 10px;
-      border: 1px solid #CCC;
-      border-radius: 4px;
       resize: none;
       font-family: monospace;
-      text-align: center;
+    }
+    .agent {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
     }
   </style>
 </head>
@@ -91,28 +89,95 @@
     <div id="agents">
       <div class="agent">
         <label>User-agent:</label>
-        <input type="text" class="userAgent" placeholder="* (для всех ботов)" value="*"><br>
+        <input type="text" class="userAgent" placeholder="* (для всех ботов)" value="*">
         <label>Allow:</label>
-        <input type="text" class="allow" placeholder="/"><br>
+        <input type="text" class="allow" placeholder="/">
         <label>Disallow:</label>
-        <input type="text" class="disallow" placeholder="/store"><br>
+        <input type="text" class="disallow" placeholder="/store">
       </div>
     </div>
 
     <button class="button" onclick="addAgent()">Добавить User-agent</button><br><br>
 
     <label>Crawl-delay (задержка между запросами):</label>
-    <input type="number" id="crawlDelay" placeholder="1"><br>
+    <input type="number" id="crawlDelay" placeholder="1">
 
     <label>Host (основной домен сайта):</label>
-    <input type="text" id="host" placeholder="example.com"><br>
+    <input type="text" id="host" placeholder="example.com">
 
     <label>Sitemap (URL карты сайта):</label>
-    <input type="text" id="sitemap" placeholder="https://example.com/sitemap.xml"><br>
+    <input type="text" id="sitemap" placeholder="https://example.com/sitemap.xml">
 
     <button class="button" onclick="generateRobotsTxt()">Создать robots.txt</button>
     <button class="button" onclick="saveRobotsTxt()">Сохранить robots.txt</button>
     <textarea id="output" readonly></textarea>
   </div>
+
+  <script>
+    function addAgent() {
+      const agentsContainer = document.getElementById('agents');
+      const agentDiv = document.createElement('div');
+      agentDiv.classList.add('agent');
+      agentDiv.innerHTML = `
+        <label>User-agent:</label>
+        <input type="text" class="userAgent" placeholder="* (для всех ботов)">
+        <label>Allow:</label>
+        <input type="text" class="allow" placeholder="/">
+        <label>Disallow:</label>
+        <input type="text" class="disallow" placeholder="/store">
+      `;
+      agentsContainer.appendChild(agentDiv);
+    }
+
+    function generateRobotsTxt() {
+      const agents = document.querySelectorAll('.agent');
+      let robotsTxt = '';
+
+      agents.forEach(agent => {
+        const userAgent = agent.querySelector('.userAgent').value || '*';
+        const allow = agent.querySelector('.allow').value;
+        const disallow = agent.querySelector('.disallow').value;
+
+        robotsTxt += `User-agent: ${userAgent}\n`;
+        if (allow) {
+          robotsTxt += `Allow: ${allow}\n`;
+        }
+        if (disallow) {
+          robotsTxt += `Disallow: ${disallow}\n`;
+        }
+        robotsTxt += `\n`;
+      });
+
+      const crawlDelay = document.getElementById('crawlDelay').value;
+      if (crawlDelay) {
+        robotsTxt += `Crawl-delay: ${crawlDelay}\n`;
+      }
+
+      const host = document.getElementById('host').value;
+      if (host) {
+        robotsTxt += `Host: ${host}\n`;
+      }
+
+      const sitemap = document.getElementById('sitemap').value;
+      if (sitemap) {
+        robotsTxt += `Sitemap: ${sitemap}\n`;
+      }
+
+      document.getElementById("output").value = robotsTxt;
+    }
+
+    function saveRobotsTxt() {
+      const robotsTxtContent = document.getElementById("output").value;
+      const blob = new Blob([robotsTxtContent], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'robots.txt';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+  </script>
 </body>
 </html>
