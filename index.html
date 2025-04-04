@@ -3,7 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <title>Генератор robots.txt в стиле VK</title>
+  <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
+  <script>
+  vkBridge.send('VKWebAppInit');
+</script>
+
   <style>
+    
     body {
       font-family: Arial, sans-serif;
       background-color: #EDEEF0;
