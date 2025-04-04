@@ -129,11 +129,38 @@
     <input type="text" id="sitemap" placeholder="https://example.com/sitemap.xml">
 
     <button class="button" onclick="generateRobotsTxt()">Создать robots.txt</button>
+    <button class="button" onclick="resetForm()">Сбросить</button>
+
     <button class="button" onclick="saveRobotsTxt()">Сохранить robots.txt</button>
     <textarea id="output" readonly></textarea>
   </div>
 
   <script>
+    function resetForm() {
+  // Очистить блоки User-agent
+  const agentsContainer = document.getElementById('agents');
+  agentsContainer.innerHTML = '';
+
+  // Добавить один пустой блок
+  const agentDiv = document.createElement('div');
+  agentDiv.classList.add('agent');
+  agentDiv.innerHTML = `
+    <label>User-agent:</label>
+    <input type="text" class="userAgent" placeholder="* (для всех ботов)" value="*">
+    <label>Allow:</label>
+    <input type="text" class="allow" placeholder="/">
+    <label>Disallow:</label>
+    <input type="text" class="disallow" placeholder="/store">
+  `;
+  agentsContainer.appendChild(agentDiv);
+
+  // Очистить остальные поля
+  document.getElementById('crawlDelay').value = '';
+  document.getElementById('host').value = '';
+  document.getElementById('sitemap').value = '';
+  document.getElementById('output').value = '';
+}
+
     function addAgent() {
       const agentsContainer = document.getElementById('agents');
       const agentDiv = document.createElement('div');
