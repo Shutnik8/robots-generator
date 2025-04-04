@@ -2,32 +2,40 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Генератор robots.txt в стиле VK</title>
   <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
-  <script>
-  vkBridge.send('VKWebAppInit');
-</script>
+  <script>vkBridge.send('VKWebAppInit');</script>
 
   <style>
-    
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      min-height: 100%;
+      box-sizing: border-box;
+    }
+
     body {
       font-family: Arial, sans-serif;
       background-color: #EDEEF0;
       color: #2C2D2E;
-      margin: 0;
       display: flex;
       align-items: center;
       justify-content: center;
-      height: 100vh;
     }
+
     .container {
       background-color: #FFF;
       max-width: 600px;
       width: 100%;
       padding: 20px;
+      margin: 20px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
       border-radius: 8px;
+      box-sizing: border-box;
     }
+
     h1 {
       font-size: 24px;
       color: #4A76A8;
@@ -35,16 +43,19 @@
       align-items: center;
       gap: 8px;
     }
+
     h1::before {
       content: "⚙️";
       font-size: 1.2em;
     }
+
     label {
       font-weight: 500;
       color: #555;
       display: block;
       margin-bottom: 5px;
     }
+
     input[type="text"], input[type="number"], textarea {
       width: 100%;
       padding: 10px;
@@ -54,6 +65,7 @@
       box-sizing: border-box;
       display: block;
     }
+
     .button {
       display: inline-block;
       padding: 10px 16px;
@@ -67,17 +79,21 @@
       text-align: center;
       transition: background-color 0.3s;
     }
+
     .button:hover {
       background-color: #3B5A7F;
     }
+
     .button:active {
       background-color: #2E4561;
     }
+
     textarea {
       height: 150px;
       resize: none;
       font-family: monospace;
     }
+
     .agent {
       display: flex;
       flex-direction: column;
@@ -85,6 +101,7 @@
     }
   </style>
 </head>
+
 <body>
   <div class="container">
     <h1>Генератор robots.txt</h1>
