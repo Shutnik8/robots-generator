@@ -88,6 +88,12 @@
       background-color: #2E4561;
     }
 
+    .small-button {
+      padding: 6px 10px;
+      font-size: 12px;
+      margin-bottom: 16px;
+    }
+
     textarea {
       height: 150px;
       resize: none;
@@ -99,29 +105,38 @@
       flex-direction: column;
       gap: 8px;
     }
+
+    .faq {
+      font-size: 75%;
+      padding-left: 20px;
+    }
   </style>
 </head>
 
 <body>
   <div id="onboarding" style="position:fixed; top:0; left:0; right:0; bottom:0; background:#fff; z-index:9999; padding:20px; display:flex; flex-direction:column; justify-content:center; align-items:center;">
-  <h2>👋 Добро пожаловать!</h2>
-  <p style="max-width:400px; text-align:center;">Это приложение поможет вам создать файл <strong>robots.txt</strong> — важный инструмент для SEO, который указывает поисковым системам, какие страницы можно индексировать.</p>
-  <p style="max-width:400px; text-align:center;">Просто введите необходимые данные и нажмите "Создать".</p>
-  <button class="button" onclick="document.getElementById('onboarding').style.display='none'" style="margin-top:20px;">Начать</button>
-</div>
+    <h2>👋 Добро пожаловать!</h2>
+    <p style="max-width:400px; text-align:center;">Это приложение поможет вам создать файл <strong>robots.txt</strong> — важный инструмент для SEO, который указывает поисковым системам, какие страницы можно индексировать.</p>
+    <p style="max-width:400px; text-align:center;">Просто введите необходимые данные и нажмите "Создать".</p>
+    <button class="button" onclick="document.getElementById('onboarding').style.display='none'" style="margin-top:20px;">Начать</button>
+  </div>
+
   <div class="container">
     <h1>Генератор robots.txt</h1>
-<hr>
-<h2>📘 Часто задаваемые вопросы</h2>
-<ul style="padding-left:20px; font-size:14px;">
-  <li><strong>User-agent</strong> — имя бота. "*" означает всех роботов.</li>
-  <li><strong>Allow</strong> — путь, который разрешено индексировать (например, "/").</li>
-  <li><strong>Disallow</strong> — путь, запрещённый для индексации (например, "/admin").</li>
-  <li><strong>Crawl-delay</strong> — задержка между запросами в секундах (например, "1").</li>
-  <li><strong>Host</strong> — основной домен сайта, например "example.com".</li>
-  <li><strong>Sitemap</strong> — полный URL вашей sitemap.xml (например, "https://example.com/sitemap.xml").</li>
-</ul>
-    <button class="button" onclick="fillExample()">Заполнить примером</button>
+    <hr>
+
+    <h2>📘 Часто задаваемые вопросы</h2>
+    <ul class="faq">
+      <li><strong>User-agent</strong> — имя бота. "*" означает всех роботов.</li>
+      <li><strong>Allow</strong> — путь, который разрешено индексировать (например, "/").</li>
+      <li><strong>Disallow</strong> — путь, запрещённый для индексации (например, "/admin").</li>
+      <li><strong>Crawl-delay</strong> — задержка между запросами в секундах (например, "1").</li>
+      <li><strong>Host</strong> — основной домен сайта, например "example.com".</li>
+      <li><strong>Sitemap</strong> — полный URL вашей sitemap.xml (например, "https://example.com/sitemap.xml").</li>
+    </ul>
+
+    <button class="button small-button" onclick="fillExample()">Заполнить примером</button>
+
     <div id="agents">
       <div class="agent">
         <label>User-agent:</label>
@@ -146,36 +161,32 @@
 
     <button class="button" onclick="generateRobotsTxt()">Создать robots.txt</button>
     <button class="button" onclick="resetForm()">Сбросить</button>
-
     <button class="button" onclick="saveRobotsTxt()">Сохранить robots.txt</button>
+
     <textarea id="output" readonly></textarea>
   </div>
 
   <script>
     function resetForm() {
-  // Очистить блоки User-agent
-  const agentsContainer = document.getElementById('agents');
-  agentsContainer.innerHTML = '';
+      const agentsContainer = document.getElementById('agents');
+      agentsContainer.innerHTML = '';
+      const agentDiv = document.createElement('div');
+      agentDiv.classList.add('agent');
+      agentDiv.innerHTML = `
+        <label>User-agent:</label>
+        <input type="text" class="userAgent" placeholder="* (для всех ботов)" value="*">
+        <label>Allow:</label>
+        <input type="text" class="allow" placeholder="/">
+        <label>Disallow:</label>
+        <input type="text" class="disallow" placeholder="/store">
+      `;
+      agentsContainer.appendChild(agentDiv);
 
-  // Добавить один пустой блок
-  const agentDiv = document.createElement('div');
-  agentDiv.classList.add('agent');
-  agentDiv.innerHTML = `
-    <label>User-agent:</label>
-    <input type="text" class="userAgent" placeholder="* (для всех ботов)" value="*">
-    <label>Allow:</label>
-    <input type="text" class="allow" placeholder="/">
-    <label>Disallow:</label>
-    <input type="text" class="disallow" placeholder="/store">
-  `;
-  agentsContainer.appendChild(agentDiv);
-
-  // Очистить остальные поля
-  document.getElementById('crawlDelay').value = '';
-  document.getElementById('host').value = '';
-  document.getElementById('sitemap').value = '';
-  document.getElementById('output').value = '';
-}
+      document.getElementById('crawlDelay').value = '';
+      document.getElementById('host').value = '';
+      document.getElementById('sitemap').value = '';
+      document.getElementById('output').value = '';
+    }
 
     function addAgent() {
       const agentsContainer = document.getElementById('agents');
@@ -241,20 +252,19 @@
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
     }
-    
-  function fillExample() {
-    resetForm(); // Сброс перед заполнением
-    const userAgent = document.querySelector('.userAgent');
-    const allow = document.querySelector('.allow');
-    const disallow = document.querySelector('.disallow');
-    userAgent.value = '*';
-    allow.value = '/';
-    disallow.value = '/private';
-    document.getElementById('crawlDelay').value = '1';
-    document.getElementById('host').value = 'example.com';
-    document.getElementById('sitemap').value = 'https://example.com/sitemap.xml';
-  }
 
+    function fillExample() {
+      resetForm();
+      const userAgent = document.querySelector('.userAgent');
+      const allow = document.querySelector('.allow');
+      const disallow = document.querySelector('.disallow');
+      userAgent.value = '*';
+      allow.value = '/';
+      disallow.value = '/private';
+      document.getElementById('crawlDelay').value = '1';
+      document.getElementById('host').value = 'example.com';
+      document.getElementById('sitemap').value = 'https://example.com/sitemap.xml';
+    }
   </script>
 </body>
 </html>
